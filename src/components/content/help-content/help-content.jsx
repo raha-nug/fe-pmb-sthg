@@ -25,12 +25,6 @@ function HelpContent() {
         </div>
         <div className="col-span-5 flex items-center justify-end gap-8 mt-3 lg:mt-0 ">
           <Button
-            onClick={() =>
-              window.open(
-                "https://api.whatsapp.com/send?phone=6282123458169&text=Halo%20Admin%20STHG%2C%20saya%20ingin%20bertanya%20tentang%20pendaftaran",
-                "_blank"
-              )
-            }
             variant="outlined"
             color="white"
             className=" flex justify-between items-center gap-3">
