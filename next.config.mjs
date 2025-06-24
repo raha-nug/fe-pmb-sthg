@@ -15,6 +15,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "sthg.labtekcmr.com",
       },
+      {
+        protocol: "https",
+        hostname: "api.sthg.ac.id",
+      },
     ],
   },
 };
