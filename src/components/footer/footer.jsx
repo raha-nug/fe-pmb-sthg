@@ -12,15 +12,15 @@ function FooterComponent() {
   const contact = [
     {
       icon: <GlobeAltIcon className="h-5 w-5" />,
-      content: "https://pmb.sthg.ac.id",
+      content: "https://simaba.sthg.ac.id",
     },
     {
       icon: <PhoneIcon className="h-5 w-5" />,
-      content: "626789098",
+      content: "+62821-2345-8169",
     },
     {
       icon: <EnvelopeIcon className="h-5 w-5" />,
-      content: "pmb@sthg.ac.id",
+      content: "Informasi@sthg.ac.id",
     },
   ];
 
