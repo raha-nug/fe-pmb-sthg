@@ -284,7 +284,7 @@ function PersonalForm({ prodi, kelas, formData }) {
           required
         />
 
-        {prodi == "S1" && kelas == "Reguler" && (
+        {prodi == "S1 Hukum" && kelas == "Reguler" && (
           <>
             <div className="sm:flex items-center">
               <Typography>Penerima KIP (Opsional)</Typography>

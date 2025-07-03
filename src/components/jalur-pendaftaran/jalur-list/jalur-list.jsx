@@ -10,17 +10,23 @@ import {
 import { useRouter } from "next/navigation";
 import { formatTanggal } from "@/utils/data";
 
-const ChipList = ({ gelombangTipe }) => {
-  if (gelombangTipe == "S1 Reguler") {
+const ChipList = ({ prodi, jalur, kelas }) => {
+  if (prodi == "S1 Hukum") {
     return (
       <>
-        <Chip variant="ghost" value="umum" className="inline mr-3" />
-        <Chip variant="ghost" value="kipk" className="inline mr-3" />
+        {jalur.map((item, index) => (
+          <Chip
+            variant="ghost"
+            value={item}
+            className="inline mr-3"
+            key={index}
+          />
+        ))}
       </>
     );
-  } else if (gelombangTipe == "S1 Karyawan") {
-    return <Chip variant="ghost" value="karyawan" className="inline mr-3" />;
-  } else if (gelombangTipe == "S2 Reguler") {
+  } else if (kelas == "Karyawan") {
+    return <Chip variant="ghost" value="umum" className="inline mr-3" />;
+  } else if (prodi == "S2 Hukum") {
     return <Chip variant="ghost" value="umum" className="inline mr-3" />;
   }
 };
@@ -44,10 +50,14 @@ function JalurList({ gelombang }) {
               </Typography>
               <Typography className="pt-5 pb-3">
                 Untuk informasi lainnya bisa kontak hotline PMB kami di Call
-                Center STHG: (0265) 330092 / HP. 082-12345-8-169
+                Center STHG: 0265-330092 atau email informasi@sthg.ac.id
               </Typography>
               <div>
-                <ChipList gelombangTipe={gelombang.tipe} />
+                <ChipList
+                  prodi={gelombang.prodi}
+                  jalur={gelombang.jalur}
+                  kelas={gelombang.kelas}
+                />
               </div>
             </div>
             <div className="mt-5 lg:mt-0 col-span-3 lg:border-l-2 flex flex-col justify-center gap-5 lg:pl-5">
@@ -71,7 +81,9 @@ function JalurList({ gelombang }) {
               </div>
               <Button
                 className="block"
-                onClick={() => setJalur(gelombang.tipe)}>
+                onClick={() =>
+                  setJalur(`${gelombang.prodi}-${gelombang.kelas}`)
+                }>
                 Daftar
               </Button>
             </div>

@@ -1,10 +1,12 @@
 import InformationComponent from "@/components/jalur-pendaftaran/informaton/information";
 import JalurList from "@/components/jalur-pendaftaran/jalur-list/jalur-list";
-import { getGelombang, parseGelombang } from "@/utils/data";
+import { masterPMB, parseGelombang } from "@/utils/data";
 import { Typography } from "@/components/components";
 
 async function Page() {
-  const gelombangData = await getGelombang();
+  // const gelombangData = await getGelombang();
+  const gelombangData = await masterPMB()
+
   const gelombang = parseGelombang(gelombangData);
 
   return (

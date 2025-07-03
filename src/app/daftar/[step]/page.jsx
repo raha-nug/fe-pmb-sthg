@@ -36,7 +36,7 @@ function Page() {
     setMahasiswaId(id);
     setProgres(prog);
     setForm(getForm());
-  },[]);
+  }, []);
 
   const handleBack = () => {
     const url = new URL(window.location.href);
@@ -51,7 +51,7 @@ function Page() {
     }
   };
 
-  const [prodi, kelas] = jalur.split(" ");
+  const [prodi, kelas] = jalur.split("-");
   return (
     <>
       {jalur === "No Jalur" || "" ? (
@@ -78,7 +78,9 @@ function Page() {
                   <PersonalForm prodi={prodi} kelas={kelas} formData={form} />
                 )}
 
-                {step == "school" && <SchoolForm prodi={prodi} formData={form} />}
+                {step == "school" && (
+                  <SchoolForm prodi={prodi} formData={form} />
+                )}
 
                 {step == "parent" && <ParentForm formData={form} />}
 

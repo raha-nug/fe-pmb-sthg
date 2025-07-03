@@ -11,7 +11,7 @@ export function getJalur() {
 }
 
 export function getForm() {
-  const form = JSON.parse(localStorage.getItem("_form") || "{}")
+  const form = JSON.parse(localStorage.getItem("_form") || "{}");
   return form;
 }
 
@@ -250,7 +250,7 @@ export const agamaOptions = [
   },
 ];
 
-export const beasiswaOptions = async() => {
+export const beasiswaOptions = async () => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/beasiswa`,
@@ -275,8 +275,7 @@ export const beasiswaOptions = async() => {
     console.log("Error fetching beasiswa data:", error.message);
     return []; // Return an empty array in case of an error
   }
-}
-
+};
 
 export const generateGraduationYearOptions = () => {
   const currentYear = new Date().getFullYear();
@@ -308,7 +307,7 @@ export const prodiOptions = [
   },
 ];
 
-export const getGelombang = async () => {
+export const masterPMB = async () => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting-pmb`,
@@ -320,20 +319,40 @@ export const getGelombang = async () => {
     if (!res.ok) {
       throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
     }
-
     const result = await res.json();
-
-    if (result && result.data && Array.isArray(result.data.gelombang)) {
-      return result.data.gelombang;
-    } else {
-      console.error("Invalid data structure:", result);
-      return []; // Return an empty array if the data structure is not as expected
-    }
+    return result.data;
   } catch (error) {
-    console.log("Error fetching gelombang data:", error.message);
-    return []; // Return an empty array in case of an error
+    console.log("Error fetching master PMB data:", error.message);
+    return error.message;
   }
 };
+
+// export const getGelombang = async () => {
+//   try {
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting-pmb`,
+//       {
+//         cache: "no-store",
+//       }
+//     );
+
+//     if (!res.ok) {
+//       throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+//     }
+
+//     const result = await res.json();
+
+//     if (result && result.data && Array.isArray(result.data.gelombang)) {
+//       return result.data.gelombang;
+//     } else {
+//       console.error("Invalid data structure:", result);
+//       return []; // Return an empty array if the data structure is not as expected
+//     }
+//   } catch (error) {
+//     console.log("Error fetching gelombang data:", error.message);
+//     return []; // Return an empty array in case of an error
+//   }
+// };
 
 export const rupiah = (number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -354,15 +373,10 @@ export const formatTanggal = (date) => {
 
 export const parseGelombang = (gelombangData) => {
   const currentDate = new Date();
+  const dataGelombang = gelombangData?.gelombang || [];
 
   // Tipe dan harga untuk gelombang
-  const tipeGelombang = ["S1 Reguler", "S1 Karyawan", "S2 Reguler"];
-
-  const hargaTipe = {
-    "Gelombang 1": 400000,
-    "Gelombang 2": 500000,
-    "Gelombang 3": 600000,
-  };
+  const { jalur, kelas, prodi } = gelombangData || [];
 
   const bulanIndonesia = {
     Januari: 0,
@@ -379,35 +393,56 @@ export const parseGelombang = (gelombangData) => {
     Desember: 11,
   };
 
-  // Map the gelombang data with the corresponding type and price
-  const parsedGelombang = Array.isArray(gelombangData)
-    ? gelombangData.flatMap((item, index) => {
+  const dataToReturn = [];
+
+  const parsedGelombang = Array.isArray(dataGelombang)
+    ? dataGelombang.forEach((item, index) => {
         const [name, dates] = item.split(" : ");
         const [start, end] = dates.split(" - ").map((date) => {
           const [day, month, year] = date.split(" ");
           const monthIndex = bulanIndonesia[month];
-          const formattedDate = new Date(year, monthIndex, parseInt(day));
-          return formattedDate;
+          return new Date(year, monthIndex, parseInt(day));
         });
 
-        return tipeGelombang.map((tipe, tipeIndex) => {
-          let price;
+        prodi.forEach((prodiItem) => {
+          const basePrice = 400000 + index * 100000;
 
-          if (tipe === "S1 Reguler" || tipe === "S1 Karyawan") {
-            price = rupiah(hargaTipe[name] || 0);
-          } else if (tipe === "S2 Reguler") {
-            price = rupiah(1000000);
+          if (prodiItem === "S1 Hukum" || prodiItem === "S1 HUKUM") {
+            kelas.forEach((kelasItem) => {
+              const applicableJalur =
+                kelasItem === "Reguler" ? jalur : ["Umum"];
+
+              dataToReturn.push({
+                name: `${prodiItem} ${name} ${kelasItem}`,
+                start,
+                end,
+                prodi: prodiItem || ["Umum"],
+                kelas: kelasItem,
+                jalur: applicableJalur,
+                price: rupiah(basePrice),
+              });
+            });
+          } else if (prodiItem === "S2 Hukum" || prodiItem === "S2 HUKUM") {
+            dataToReturn.push({
+              name: `${prodiItem} ${name} ${kelas[1]}`,
+              start,
+              end,
+              prodi: prodiItem,
+              kelas: kelas[1], // default 'Karyawan' misalnya
+              jalur: ["Umum"], // hanya jalur umum
+              price: rupiah(1000000),
+            });
           }
-
-          return { name: `${tipe} ${name}`, start, end, tipe, price };
         });
       })
     : [];
 
   // Filter the gelombang based on the current date
-  const filteredGelombang = parsedGelombang.filter(({ start, end }) => {
-    return currentDate >= start && currentDate <= end;
-  });
+  // const filteredGelombang = parsedGelombang.filter(({ start, end }) => {
+  //   return currentDate >= start && currentDate <= end;
+  // });
 
-  return filteredGelombang;
+  // return filteredGelombang;
+
+  return dataToReturn;
 };
