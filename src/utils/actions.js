@@ -12,7 +12,7 @@ export const handleDaftar = (e) => {
 
   if (pathname[1] === "personal") {
     const jalur = localStorage.getItem("_jalur");
-    const [prodi, kelas] = jalur.split(" ");
+    const [prodi, kelas] = jalur.split("-");
 
     const province = formData.get("province");
     const regency = formData.get("regency");
