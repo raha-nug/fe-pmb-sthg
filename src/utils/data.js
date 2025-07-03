@@ -437,12 +437,9 @@ export const parseGelombang = (gelombangData) => {
       })
     : [];
 
-  // Filter the gelombang based on the current date
-  // const filteredGelombang = parsedGelombang.filter(({ start, end }) => {
-  //   return currentDate >= start && currentDate <= end;
-  // });
+  const filteredGelombang = dataToReturn.filter(({ start, end }) => {
+    return currentDate >= start && currentDate <= end;
+  });
 
-  // return filteredGelombang;
-
-  return dataToReturn;
+  return filteredGelombang;
 };
